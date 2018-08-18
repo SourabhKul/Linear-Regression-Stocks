@@ -11,7 +11,7 @@ import pickle
 style.use('ggplot')
 
 # Import Google stock price data from quandl
-df = quandl.get('WIKI/NVDA', api_key = 'yad_xM6acsSsR6ZXzhC5')
+df = quandl.get('WIKI/GOOGL', api_key = 'yad_xM6acsSsR6ZXzhC5')
 
 # Select the data features we are interested in
 df = df[['Adj. Open','Adj. High','Adj. Low','Adj. Close','Adj. Volume']]
@@ -29,7 +29,7 @@ forecast_col = 'Adj. Close'
 # Replace NA values with a number 
 df.fillna(-99999, inplace=True)
 # How far into future do you want to predict? 0.01 = 1%
-forecast_window = 0.01
+forecast_window = 0.1
 forecast_out = int(math.ceil(forecast_window*len(df)))
 # The forecast is close values of future days, push them back by forecast_out amount and now they are the labels we would like to forecast!
 df['label'] = df[forecast_col].shift(-forecast_out)
@@ -38,9 +38,9 @@ df['label'] = df[forecast_col].shift(-forecast_out)
 # Seperate dataset into features and labels, normalize data.
 X = np.array(df.drop(['label'],1))
 X = preprocessing.scale(X)
-
-X = X[:-forecast_out]
 X_lately = X[-forecast_out:]
+X = X[:-forecast_out]
+
 df.dropna(inplace=True)
 
 y = np.array(df['label'])
